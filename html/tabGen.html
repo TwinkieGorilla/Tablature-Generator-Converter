@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tab Generator</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../css/test.css"/>
+</head>
+<body>
+    <h4>Tab Generator</h4>
+    <b>NOTE: Audio file and tab edits will be discarded upon refreshing the page.</b> <br>
+    <audio id="audioSmack" controls controlsList="nodownload">
+        <source src="" id="src" />
+    </audio>
+    <input type="file" id="upload">
+    <div class="container" id="generation">Generated Tabs:
+        <section id="output" contenteditable="true"> <!--This should be an editable table-->
+            <div>-------------</div> <!--This is the first tab thing, if it's edited, it's gone.-->
+        </section>
+        <!--
+            I need to figure out how to download locally without resetting the tabs that are generated,
+            especially if those tabs are generated through a recording. I don't want to lose any content here.
+        -->
+        <input type="button" id="save2" value="Save" onclick="saveTabs()"/>
+    </div>
+</body>
+    <script src="../js/audio.js"></script>
+    <script src="../js/main.js"></script>
+</html>
