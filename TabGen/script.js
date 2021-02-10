@@ -174,8 +174,18 @@ const AudioContext = window.AudioContext
   || false
 
 const audioContext = new AudioContext()
-document.addEventListener("click", () => audioContext.resume()) // audioContexts must be started by user interaction with the page
+console.log('state after instantiation: ' + audioContext.state)
+// document.addEventListener("click", () => audioContext.resume()) // audioContexts must be started by user interaction with the page
+/**********HERE***************/
 
+document.querySelector("#start").addEventListener("click", function() {
+  console.log("Start button clicked");
+  audioContext.resume();
+  console.log('after resume function called: ' + audioContext.state);
+  
+});
+
+/*****************************/
 // meyda
 let analyzer = null
 let audioSourceNodeMap = {}

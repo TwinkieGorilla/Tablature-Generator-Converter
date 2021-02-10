@@ -16,15 +16,19 @@
     <audio id="audioSmack" controls controlsList="nodownload">
         <source src="" id="src" />
     </audio>
+    <!-- Audio waves / frequencies -->
+    <div class='flex'>
+        <select id='audioSourceSelect'></select>
+    <div id='monitor'> </div>
+    <canvas id='canvas' width='700' height='300'></canvas>
+    <!-- Generated Tabs -->
     <input type="file" id="upload">
     <div class="container" id="generation">Generated Tabs:
-        <section id="output" contenteditable="true"> <!--This should be an editable table-->
-            <div>-------------</div> <!--This is the first tab thing, if it's edited, it's gone.-->
+        <section id="output" contenteditable="true"> 
+            <div>-------------</div>
+            <div>-------------</div>
+            <div>-------------</div>
         </section>
-        <!--
-            I need to figure out how to download locally without resetting the tabs that are generated,
-            especially if those tabs are generated through a recording. I don't want to lose any content here.
-        -->
         <input type="button" id="save2" value="Save" onclick="saveTabs()"/>
     </div>
 </body>
