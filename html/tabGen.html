@@ -17,17 +17,33 @@
         <source src="" id="src" />
     </audio>
     <input type="file" id="upload">
+    <br>
+    <input type="button" id="start" value="Start">
+    <audio id="micAudio">
+        <source src="" id="src2"/>
+    </audio>
+    <br>
+    <!-- Audio waves / frequencies -->
+    <div class='flex'>
+        <select id='audioSourceSelect'></select>
+    <div id='monitor'> </div>
+    <canvas id='canvas' width='700' height='300'></canvas>
+    
+    <!-- Generated Tabs -->
     <div class="container" id="generation">Generated Tabs:
-        <section id="output" contenteditable="true"> <!--This should be an editable table-->
-            <div>-------------</div> <!--This is the first tab thing, if it's edited, it's gone.-->
+        <section id="output" contenteditable="true"> 
+            <div>-------------</div>
+            <div>-------------</div>
+            <div>-------------</div>
         </section>
-        <!--
-            I need to figure out how to download locally without resetting the tabs that are generated,
-            especially if those tabs are generated through a recording. I don't want to lose any content here.
-        -->
         <input type="button" id="save2" value="Save" onclick="saveTabs()"/>
     </div>
 </body>
     <script src="../js/audio.js"></script>
     <script src="../js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/meyda@5.0.8/dist/web/meyda.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"
+        integrity="sha512-90vH1Z83AJY9DmlWa8WkjkV79yfS2n2Oxhsi2dZbIv0nC4E6m5AbH8Nh156kkM7JePmqD6tcZsfad1ueoaovww=="
+        crossorigin="anonymous"></script>
+    <script src="../TabGen/script.js"></script>
 </html>
