@@ -183,7 +183,14 @@ document.querySelector("#start").addEventListener("click", function() {
   console.log("Start button clicked");
   audioContext.resume();
   console.log('after resume function called: ' + audioContext.state);
-  
+  initializeAudio();
+});
+
+document.querySelector("#stop").addEventListener("click", function () {
+  console.log("Stop button clicked");
+  audioContext.suspend();
+  console.log('after stop function called: ' + audioContext.state);
+
 });
 
 /*****************************/
@@ -352,4 +359,4 @@ const setLevels = () => {
 
 // requestanimationframe runs once every time screen refreshes
 const initializeAudio = () => { requestAnimationFrame(setLevels) } 
-initializeAudio() // initialize the audio as soon as the page is loaded
+//initializeAudio() // initialize the audio as soon as the page is loaded
