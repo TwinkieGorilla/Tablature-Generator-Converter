@@ -99,7 +99,7 @@ const drawSpectrumVisualizer = (spectrum, noSignal) => {
 
 // real time data is stored
 let levels = [
-  {
+  {/*
     name: 'Low',
     type: 'frequency',
     range: { min: 0, max: 250 }, // frequency range, in hz
@@ -115,7 +115,7 @@ let levels = [
     max: 0,
     corrected: 0
   },
-  {
+  {*/
     name: 'High',
     type: 'frequency',
     range: { min: 2000, max: 22050 },
@@ -197,6 +197,8 @@ document.querySelector("#stop").addEventListener("click", function () {
 // meyda
 let analyzer = null
 let audioSourceNodeMap = {}
+let averageLoudness = 0
+let fret = 0
 
 const initializeAnalyzer = audioSource => {
   analyzer = Meyda.createMeydaAnalyzer({
@@ -205,30 +207,89 @@ const initializeAnalyzer = audioSource => {
     bufferSize: 1024,
     featureExtractors: [ //features to be added
       //'amplitudeSpectrum',
-      'spectralCentroid',
-      'spectralSpread',
+      //'spectralCentroid',
+      //'spectralSpread',
 	  'chroma',
-	  //'powerSpectrum'
+	  'spectralFlatness'
     ],
     callback: ({
       //amplitudeSpectrum, 
-      spectralCentroid, 
-      spectralSpread,
+      //spectralCentroid, 
+      //spectralSpread,
 	  chroma,
-	  //powerSpectrum
+	  spectralFlatness
     }) => {
 
+/* 																																	chroma						*/
+
+	  
       newSpectrum = chroma // populate spectrum
 
       if (chroma) { brightness = 1024 / (1024 * chroma) }
       if (chroma) { currentEnergy = 0.87 + (chroma / 1024) } 
+	  
+	  if(spectralFlatness < 0.1){									// if "not noisy" then record pitch data
+		  
+		  if(chroma[0] > 0.7){
+			  console.log("you played a C")
+			  fret = 8
+		  }else if(chroma[1] > 0.7){
+			  console.log("you played a C#")
+			  fret = 9
+		  }else if(chroma[2] > 0.7){
+			  console.log("you played a D")
+			  fret = 10
+		  }else if(chroma[3] > 0.7){
+			  console.log("you played a D#")
+			  fret = 11
+		  }else if(chroma[4] > 0.7){
+			  console.log("you played a E")
+			  fret = 0
+		  }else if(chroma[5] > 0.7){
+			  console.log("you played a F")
+			  fret = 1
+		  }else if(chroma[6] > 0.7){
+			  console.log("you played a F#")
+			  fret = 2
+		  }else if(chroma[7] > 0.7){
+			  console.log("you played a G")
+			  fret = 3
+		  }else if(chroma[8] > 0.7){
+			  console.log("you played a G#")
+			  fret = 4
+		  }else if(chroma[9] > 0.7){
+			  console.log("you played a A")
+			  fret = 5
+		  }else if(chroma[10] > 0.7){
+			  console.log("you played a A#")
+			  fret = 6
+		  }else if(chroma[11] > 0.7){
+			  console.log("you played a B")
+			  fret = 7
+		  }
+	 
+			document.getElementById("eString").innerHTML += fret + "-"
+			document.getElementById("BString").innerHTML += "--"
+			document.getElementById("GString").innerHTML += "--"
+			document.getElementById("DString").innerHTML += "--"
+			document.getElementById("AString").innerHTML += "--"
+			document.getElementById("EString").innerHTML += "--"
+			if(chroma % 2 != 0){																// alternate tabs with blank space
+				document.getElementById("eString").innerHTML += "--"
+				document.getElementById("BString").innerHTML += "--"
+				document.getElementById("GString").innerHTML += "--"
+				document.getElementById("DString").innerHTML += "--"
+				document.getElementById("AString").innerHTML += "--"
+				document.getElementById("EString").innerHTML += "--"
+			}		
+		}
+	  
     }
   }) 
   
   analyzer.start()
-
+  
 }
-
 
 
 // connect the audioSource to the audioContext (needed in order to process it)
@@ -316,42 +377,23 @@ const setLevels = () => {
     for (let i = minBin; i < maxBin; i++) {
       freqSum += newSpectrum[i]
     }
-    level.level = freqSum / numberOfBinsToAnalyze
+	
+	level.level = freqSum / numberOfBinsToAnalyze
 
     if (level.level > level.max) { level.max = level.level }
     level.corrected = (level.level / level.max).toFixed(2)
 	
 	freqTest = level.level.toFixed(2)
-	document.querySelector('#level_'+index).innerHTML = 'Normalized Level: ' + level.corrected
+	document.querySelector('#level_'+index).innerHTML = 'Normalized Level: ' + level.level
 	
-	let counter = Math.floor((freqTest * 4))
 	
-		if (freqTest < (0.5)){
-			if(freqTest == 0.28){
-				document.getElementById("eString").innerHTML += counter + "-"
-				document.getElementById("BString").innerHTML += "--"
-				document.getElementById("GString").innerHTML += "--"
-				document.getElementById("DString").innerHTML += "--"
-				document.getElementById("AString").innerHTML += "--"
-				document.getElementById("EString").innerHTML += "--"
-				if(counter % 2 != 0){																// alternate blank space with tabs
-					document.getElementById("eString").innerHTML += "--"
-					document.getElementById("BString").innerHTML += "--"
-					document.getElementById("GString").innerHTML += "--"
-					document.getElementById("DString").innerHTML += "--"
-					document.getElementById("AString").innerHTML += "--"
-					document.getElementById("EString").innerHTML += "--"
-				}
-			}
-		}
 	})
-  
   // draw spectrum
   newSpectrum.forEach((value, index) => {
     if (value > maxSpectrumEnergy) { 
       maxSpectrumEnergy = value 
     }
-    normalizedSpectrum[index] = value / maxSpectrumEnergy
+	normalizedSpectrum[index] = value / maxSpectrumEnergy
   })
 
   drawSpectrumVisualizer(normalizedSpectrum, noSignal)
