@@ -2,7 +2,7 @@ body {
     margin: 10px;
 }
 
-#generation {
+section {
     margin: 10px;
     padding: 10px;
     border: 1px;
@@ -11,10 +11,11 @@ body {
     border-radius: 5px;
 }
 
-#output {
+#output, #placeholder {
     margin: 20px;
     padding: 10px;
-    overflow: auto;
+    overflow-x: auto;
+    display: inline-block;
 }
 
 #foot a {
