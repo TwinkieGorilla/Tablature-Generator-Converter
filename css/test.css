@@ -16,3 +16,9 @@ body {
     padding: 10px;
     overflow: auto;
 }
+
+#foot a {
+    display: inline-block;
+    padding-left: 50px;
+    padding-right: 50px;
+}
