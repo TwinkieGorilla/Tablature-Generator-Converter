@@ -115,12 +115,7 @@ levels.forEach((level, index) => {
   const element = document.createElement('div')
   element.innerHTML = `
     <div class='level'>
-      Name: ${level.name}
-      <br/>
-      Type: ${level.type}
-      <br/>
-      <div id='level_${index}'>Level: ${level.level}<div>
-      <br/>
+      <div id='level_${index}'><div>
       <br/>
     </div>
   `
@@ -264,7 +259,7 @@ const initializeAnalyzer = audioSource => {
 			  fret = 7
 		  }
 	 
-			document.getElementById("eString").innerHTML += fret + "-"
+			document.getElementById("eString").innerHTML += (fret.toString().length === 1 ? `$${fret}` : fret) + "-"
 			document.getElementById("BString").innerHTML += "--"
 			document.getElementById("GString").innerHTML += "--"
 			document.getElementById("DString").innerHTML += "--"
@@ -380,7 +375,7 @@ const setLevels = () => {
     level.corrected = (level.level / level.max).toFixed(2)
 	
 	freqTest = level.level.toFixed(2)
-	document.querySelector('#level_'+index).innerHTML = 'Normalized Level: ' + level.level
+	// document.querySelector('#level_'+index).innerHTML = 'Normalized Level: ' + level.level
 	
 	
 	})
