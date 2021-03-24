@@ -359,7 +359,7 @@ const initializeAnalyzer = audioSource => {
     if(spectralFlatness < 0.1){									// if clear signal, then record pitch data
       
       if(chroma[0] > 0.7){
-        // console.log("you played a C")
+         console.log("you played a C")
         fret = 8
       }else if(chroma[1] > 0.7){
         // console.log("you played a C#")
