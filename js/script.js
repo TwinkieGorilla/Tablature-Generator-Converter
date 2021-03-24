@@ -1,3 +1,160 @@
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+var audioContextPitchDetect = null;
+var isPlayingPitchDetect = false;
+var sourceNode = null;
+var analyser = null;
+var theBuffer = null;
+var DEBUGCANVAS = null;
+var mediaStreamSource = null;
+var detectorElem, 
+	canvasElem,
+	waveCanvas,
+	pitchElem,
+	noteElem,
+	detuneElem,
+	detuneAmount;
+
+function gotStream(stream) {
+		audioContextPitchDetect = new AudioContext();
+
+		detectorElem = document.getElementById( "detector" );
+		canvasElem = document.getElementById( "output" );
+		pitchElem = document.getElementById( "pitch" );
+		noteElem = document.getElementById( "note" );
+		detuneElem = document.getElementById( "detune" );
+		detuneAmount = document.getElementById( "detune_amt" );
+
+    // Create an AudioNode from the stream.
+    mediaStreamSource = audioContextPitchDetect.createMediaStreamSource(stream);
+
+    // Connect it to the destination.
+    analyser = audioContextPitchDetect.createAnalyser();
+    analyser.fftSize = 2048;
+    mediaStreamSource.connect( analyser );
+    updatePitch();
+}
+
+var rafID = null;
+var tracks = null;
+var buflen = 1024;
+var buf = new Float32Array( buflen );
+
+var noteStrings = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+function noteFromPitch( frequency ) {
+	var noteNum = 12 * (Math.log( frequency / 440 )/Math.log(2) );
+	return Math.round( noteNum ) + 69;
+}
+
+function frequencyFromNoteNumber( note ) {
+	return 440 * Math.pow(2,(note-69)/12);
+}
+
+function centsOffFromPitch( frequency, note ) {
+	return Math.floor( 1200 * Math.log( frequency / frequencyFromNoteNumber( note ))/Math.log(2) );
+}
+
+var MIN_SAMPLES = 0;  // will be initialized when AudioContext is created.
+
+function autoCorrelate( buf, sampleRate ) {
+	var SIZE = buf.length;
+	var MAX_SAMPLES = Math.floor(SIZE/2);
+	var best_offset = -1;
+	var best_correlation = 0;
+	var rms = 0;
+	var foundGoodCorrelation = false;
+	var correlations = new Array(MAX_SAMPLES);
+
+	for (var i=0;i<SIZE;i++) {
+		var val = buf[i];
+		rms += val*val;
+	}
+	rms = Math.sqrt(rms/SIZE);
+	if (rms<0.01) // not enough signal
+		return -1;
+
+	var lastCorrelation=1;
+	for (var offset = MIN_SAMPLES; offset < MAX_SAMPLES; offset++) {
+		var correlation = 0;
+
+		for (var i=0; i<MAX_SAMPLES; i++) {
+			correlation += Math.abs((buf[i])-(buf[i+offset]));
+		}
+		correlation = 1 - (correlation/MAX_SAMPLES);
+		correlations[offset] = correlation; // store it, for the tweaking we need to do below.
+		if ((correlation>0.9) && (correlation > lastCorrelation)) {
+			foundGoodCorrelation = true;
+			if (correlation > best_correlation) {
+				best_correlation = correlation;
+				best_offset = offset;
+			}
+		} else if (foundGoodCorrelation) {
+			// short-circuit - we found a good correlation, then a bad one, so we'd just be seeing copies from here.
+			// Now we need to tweak the offset - by interpolating between the values to the left and right of the
+			// best offset, and shifting it a bit.  This is complex, and HACKY in this code (happy to take PRs!) -
+			// we need to do a curve fit on correlations[] around best_offset in order to better determine precise
+			// (anti-aliased) offset.
+
+			// we know best_offset >=1, 
+			// since foundGoodCorrelation cannot go to true until the second pass (offset=1), and 
+			// we can't drop into this clause until the following pass (else if).
+			var shift = (correlations[best_offset+1] - correlations[best_offset-1])/correlations[best_offset];  
+			return sampleRate/(best_offset+(8*shift));
+		}
+		lastCorrelation = correlation;
+	}
+	if (best_correlation > 0.01) {
+		// console.log("f = " + sampleRate/best_offset + "Hz (rms: " + rms + " confidence: " + best_correlation + ")")
+		return sampleRate/best_offset;
+	}
+	return -1;
+//	var best_frequency = sampleRate/best_offset;
+}
+
+function updatePitch( time ) {
+	var cycles = new Array;
+	analyser.getFloatTimeDomainData( buf );
+	var ac = autoCorrelate( buf, audioContextPitchDetect.sampleRate );
+	// TODO: Paint confidence meter on canvasElem here.
+
+	if (ac == -1) {
+		detectorElem.className = "vague";
+		pitchElem.innerText = "--";
+		noteElem.innerText = "-";
+		detuneElem.className = "";
+		detuneAmount.innerText = "--";
+	} else {
+		detectorElem.className = "confident";
+		pitch = ac;
+		pitchElem.innerText = Math.round( pitch ) ;
+		var note =  noteFromPitch( pitch );
+		noteElem.innerHTML = noteStrings[note%12];
+		var detune = centsOffFromPitch( pitch, note );
+		if (detune == 0 ) {
+			detuneElem.className = "";
+			detuneAmount.innerHTML = "--";
+		} else {
+			if (detune < 0)
+				detuneElem.className = "flat";
+			else
+				detuneElem.className = "sharp";
+			detuneAmount.innerHTML = Math.abs( detune );
+		}
+
+    console.log('Pitch', pitch)
+    console.log('Note', noteStrings[note%12])
+    console.log('Detune', detune < 0 ? 'flat' : 'sharp')
+    console.log('Detune amount', Math.abs( detune ))
+    console.log('------------')
+	}
+
+	if (!window.requestAnimationFrame)
+		window.requestAnimationFrame = window.webkitRequestAnimationFrame;
+	rafID = window.requestAnimationFrame( updatePitch );
+}
+
+
 let audioSource = null; // the active audio source
 let audioSources = []; // every audio source
 
@@ -160,27 +317,7 @@ document.querySelector("#start").addEventListener("click", function() {
   console.log("Start button clicked");
   audioContext.resume();
   console.log('after resume function called: ' + audioContext.state);
-  initializeAudio();
-  
-  var voice = new Wad({source : 'mic' }); // At this point, your browser will ask for permission to access your microphone.
-  var tuner = new Wad.Poly();
-  tuner.setVolume(0); // If you're not using headphones, you can eliminate microphone feedback by muting the output from the tuner.
-  tuner.add(voice);
-
-  voice.play(); // You must give your browser permission to access your microphone before calling play().
-
-  tuner.updatePitch() // The tuner is now calculating the pitch and note name of its input 60 times per second. These values are stored in <code>tuner.pitch</code> and <code>tuner.noteName</code>.
-
-  var logPitch = function(){
-    console.log(tuner.pitch, tuner.noteName)
-    requestAnimationFrame(logPitch)
-  };
-  logPitch();
-  voice.play();
-  // If you sing into your microphone, your pitch will be logged to the console in real time.
-
-  tuner.stopUpdatingPitch(); // Stop calculating the pitch if you don't need to know it anymore.
-  
+  initializeAudio(); 
 });
 
 document.querySelector("#stop").addEventListener("click", function () {
@@ -218,47 +355,47 @@ const initializeAnalyzer = audioSource => {
 
       if (chroma) { brightness = 1024 / (1024 * chroma) }
       if (chroma) { currentEnergy = 0.87 + (chroma / 1024) } 
-	  
-	  if(spectralFlatness < 0.1){									// if clear signal, then record pitch data
-		  
-		  if(chroma[0] > 0.7){
-			  console.log("you played a C")
-			  fret = 8
-		  }else if(chroma[1] > 0.7){
-			  console.log("you played a C#")
-			  fret = 9
-		  }else if(chroma[2] > 0.7){
-			  console.log("you played a D")
-			  fret = 10
-		  }else if(chroma[3] > 0.7){
-			  console.log("you played a D#")
-			  fret = 11
-		  }else if(chroma[4] > 0.7){
-			  console.log("you played a E")
-			  fret = 0
-		  }else if(chroma[5] > 0.7){
-			  console.log("you played a F")
-			  fret = 1
-		  }else if(chroma[6] > 0.7){
-			  console.log("you played a F#")
-			  fret = 2
-		  }else if(chroma[7] > 0.7){
-			  console.log("you played a G")
-			  fret = 3
-		  }else if(chroma[8] > 0.7){
-			  console.log("you played a G#")
-			  fret = 4
-		  }else if(chroma[9] > 0.7){
-			  console.log("you played a A")
-			  fret = 5
-		  }else if(chroma[10] > 0.7){
-			  console.log("you played a A#")
-			  fret = 6
-		  }else if(chroma[11] > 0.7){
-			  console.log("you played a B")
-			  fret = 7
-		  }
-	 
+    
+    if(spectralFlatness < 0.1){									// if clear signal, then record pitch data
+      
+      if(chroma[0] > 0.7){
+        // console.log("you played a C")
+        fret = 8
+      }else if(chroma[1] > 0.7){
+        // console.log("you played a C#")
+        fret = 9
+      }else if(chroma[2] > 0.7){
+        // console.log("you played a D")
+        fret = 10
+      }else if(chroma[3] > 0.7){
+        // console.log("you played a D#")
+        fret = 11
+      }else if(chroma[4] > 0.7){
+        // console.log("you played a E")
+        fret = 0
+      }else if(chroma[5] > 0.7){
+        // console.log("you played a F")
+        fret = 1
+      }else if(chroma[6] > 0.7){
+        // console.log("you played a F#")
+        fret = 2
+      }else if(chroma[7] > 0.7){
+        // console.log("you played a G")
+        fret = 3
+      }else if(chroma[8] > 0.7){
+        // console.log("you played a G#")
+        fret = 4
+      }else if(chroma[9] > 0.7){
+        // console.log("you played a A")
+        fret = 5
+      }else if(chroma[10] > 0.7){
+        // console.log("you played a A#")
+        fret = 6
+      }else if(chroma[11] > 0.7){
+        // console.log("you played a B")
+        fret = 7
+      }
+  
 			document.getElementById("eString").innerHTML += (fret.toString().length === 1 ? `$${fret}` : fret) + "-"
 			document.getElementById("BString").innerHTML += "--"
 			document.getElementById("GString").innerHTML += "--"
@@ -315,6 +452,8 @@ const setMasterAudioSource = ({type, source}) => {
   // }
 }
 
+
+
 let newSpectrum = new Array(512) // holds 512 values (bins) for the audio frequency spectrum
 newSpectrum.fill(0, 0, newSpectrum.length)
 let currentSpectrum = new Array(512)
@@ -338,6 +477,10 @@ ON_AUDIO_SOURCE_CHANGE((audioSource, audioSources) => {
   connectAudioSource(audioSource, audioSources)
   setMasterAudioSource(audioSources.find(source => source.name === audioSource))
   analyzer ? analyzer.setSource(audioSourceNodeMap[audioSource]) : initializeAnalyzer(audioSource)
+
+  const stream = audioSources.find(audioSrc => audioSrc.name === audioSource).source
+  gotStream(stream)
+
 })
 
 // real time levels data
