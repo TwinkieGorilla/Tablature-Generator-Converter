@@ -9,11 +9,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- <script src="js/pitchdetect.js"></script> -->
-    
-    <!-- <script src="js/main.js"></script> -->
     <link rel="stylesheet" href="css/test.css" />
-
+    <script src="Chord_Tables/uke_hash_map.js"></script>
+    <script src="Chord_Tables/guitar_hash_map copy.js"></script>
     <style>
         body { font: 14pt 'Alike', sans-serif;}
         #note { font-size: 164px; }
@@ -31,16 +29,16 @@
         </style>
 </head>
 
-<body style="display: flex; justify-content: center; flex-wrap: wrap; width: 100%;">
+<body>
     <h1>Tab Generator</h1>
 
     <div class="fill">
-        <b>NOTE: Audio file and tab edits will be discarded upon refreshing the page.</b>
+        <b>NOTE: Tab edits will be discarded upon refreshing the page.</b>
     </div>
 
-    <div class="fill">
+    <!-- <div class="fill">
         <b>If you want to delete the generated tabs, just refresh the page.</b>
-    </div>
+    </div> -->
 
     <input type="button" id="start" value="Start">
     <input type="button" id="stop" value="Stop">
@@ -67,32 +65,32 @@
 
     </div>
     <!-- <button onclick="toggleLiveInput()">use live input</button> -->
-
-    
-
     <div class='fill'>
         <h2>Generated Tabs:</h2>
     </div>
 
-    <div class='fill'>
+    <div id='placeholder'>
         e||-<br>B||-<br>G||-<br>D||-<br>A||-<br>E||-
     </div>
-
-    <div id="output" style="font-family: monospace;">
-        <div id="eString"></div>
-        <div id="BString"></div>
-        <div id="GString"></div>
-        <div id="DString"></div>
-        <div id="AString"></div>
-        <div id="EString"></div>
+    <div class="container" id="generation">
+        <section id="output" contenteditable="false">
+            <div id="string1"></div>
+            <div id="string2"></div>
+            <div id="string3"></div>
+            <div id="string4"></div>
+            <div id="string5"></div>
+            <div id="string6"></div>
+        </section>
     </div>
-
     <div class='fill'>
         <input type="button" id="save2" value="Save" onclick="saveTabs()" />
         <input type="button" id='convert' value="Convert" onclick="loadConverter()">
+        <select name="instrument" id="instrument">
+            <option value="uke">Ukulele</option>
+            <option value="banjo">Banjo</option>
+        </select>
     </div>
     </div>
-    
     <div class='fill'>
         <div id='converter'></div>
     </div>
@@ -104,15 +102,12 @@
         <a href="#">Github</a>
     </div>
 </footer>
-<script src="js/audio.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/meyda@5.0.8/dist/web/meyda.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"
     integrity="sha512-90vH1Z83AJY9DmlWa8WkjkV79yfS2n2Oxhsi2dZbIv0nC4E6m5AbH8Nh156kkM7JePmqD6tcZsfad1ueoaovww=="
     crossorigin="anonymous"></script>
-<script src="js/main.js"></script>
+<script src="js/saveTabs.js"></script>
 <script src="js/script.js"></script>
-<script src="Chord_Tables/uke_hash_map.js"></script>
-<script src="Chord_Tables/guitar_hash_map copy.js"></script>
 <!-- <script src="js/banjo_hash_map.js"></script> -->
 <script src="js/converter.js"></script>
 </html>
