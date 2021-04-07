@@ -455,11 +455,7 @@ const initializeAnalyzer = audioSource => {
           console.log("C#4")
           notePlayed = 21
         }else if(pitch < 270 && pitch > 256){
-<<<<<<< HEAD
-          console.log("C4")                                                 // BEGIN OCTAVE 4
-=======
           console.log("C4")                                             // BEGIN OCTAVE 4
->>>>>>> 229f9a2bead27d9a3a9965b4a598b35415865fa3
           notePlayed = 20
         }else if(pitch < 255 && pitch > 241){
           console.log("B3")
