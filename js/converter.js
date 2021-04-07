@@ -7,13 +7,14 @@ var generation = document.getElementById('output');
 var d = document.createElement('br');
 var the_uke;
 
-var eString = document.getElementById('eString');
-var BString = document.getElementById('BString');
-var GString = document.getElementById('GString');
-var DString = document.getElementById('DString');
-var AString = document.getElementById('AString');
-var EString = document.getElementById('EString');
+var eString = document.getElementById('string1');
+var BString = document.getElementById('string2');
+var GString = document.getElementById('string3');
+var DString = document.getElementById('string4');
+var AString = document.getElementById('string5');
+var EString = document.getElementById('string6');
 
+var selectOption = document.getElementById('instrument');
 
 //creating the six GUITAR string arrays
 var guit_string1 = new Array();
@@ -177,42 +178,54 @@ function loadConverter()
         reset, and emptied to refill when the user hits the 'convert' button again. This is to accomodate the editing of tabs.
     */
     chords = [[]]; //reset the chord variable for the next set of chords to convert
-    guit_to_uke_convert(); //instantiates the guit_to_uke_convert function -- updates the ukulele tab
+    if (selectOption.options[selectOption.selectedIndex].value == 'uke')
+    {
+        console.log('selected uke');
+        guit_to_uke_convert(); //instantiates the guit_to_uke_convert function -- updates the ukulele tab
+    }
+    else if (selectOption.options[selectOption.selectedIndex].value == 'banjo')
+    {
+        console.log('selected banjo');
+    }
+    else
+        console.log('else');
     all_guit_strings = [[]]; //reset the double array...??? -> this works!!
 }
 // mapping function that will convert the guitar chord in column 1 to the corresponding ukulele chord
 function guit_to_uke_convert() {
     var frigginChord = '';
-    // for (let i = 1; i < all_guit_strings.length; i++) {
-    //     chord = chord + all_guit_strings[i][j];
-    // }
+    convertedStuff.textContent = ''; //wipe the converted section
     console.log(all_guit_strings.length); // length = 7?
-    for (let j = 0; j < guit_string1.length; j++) {
+    convertedStuff.textContent = "Ukulele Conversion: ";
+    //convertedStuff.appendChild(document.createElement('br')); //create a break in between the converted pieces
+
+    for (let j = 0; j < guit_string1.length; j++) { //assuming that the length of guitarstring1 is greater than all other strings
         chords.push(all_guit_strings.map(function(value,index){return value[j];})); //return a column
     }
-    //console.log(chords)
 
     for (let index = 0; index < chords.length; index++) {
         const element = chords[index];
         //console.log(element); //returns all arrays holding the columns
 
         for (let jindex = 0; jindex < element.length; jindex++) {
-            const d = element[jindex];
-            if (d == undefined)
+            //const d = element[jindex];
+            if (element[jindex] == undefined)
                 continue;
             else
             {
+                const d = element[jindex];
                 frigginChord += d;
                 the_uke = uke_chord.get(guit_chord.get(frigginChord));
-                console.log(the_uke); //returns undefined if there is no equivalent chord conversion
+                if (the_uke != undefined)
+                {
+                    console.log(the_uke); //returns undefined if there is no equivalent chord conversion
+                    convertedStuff.textContent += the_uke + "\n"; //add it to the div below the generator
+                }
             }
         }
         console.log(frigginChord);
         frigginChord = ''; //wipe the chord after conversion
     }
-    // var converted_uke_chord = uke_chord.get(guit_chord.get(completeChord));
-    // console.log(`uke: ${converted_uke_chord}`);
-    // console.log(completeChord);
 }
 // mapping function that will convert the guitar chord in column 1 to the corresponding banjo tab
 
