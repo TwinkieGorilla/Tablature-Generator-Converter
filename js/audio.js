@@ -6,4 +6,4 @@ function handleFiles(event) {
 	document.getElementById("audioSmack").load();
 }
 
-document.getElementById("upload").addEventListener("change", handleFiles, false);
+//document.getElementById("upload").addEventListener("change", handleFiles, false);
