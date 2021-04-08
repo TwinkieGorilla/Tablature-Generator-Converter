@@ -10,8 +10,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="css/test.css" />
-    <script src="Chord_Tables/uke_hash_map.js"></script>
-    <script src="Chord_Tables/guitar_hash_map copy.js"></script>
     <style>
         body { font: 14pt 'Alike', sans-serif;}
         #note { font-size: 164px; }
@@ -35,10 +33,6 @@
     <div class="fill">
         <b>NOTE: Tab edits will be discarded upon refreshing the page.</b>
     </div>
-
-    <!-- <div class="fill">
-        <b>If you want to delete the generated tabs, just refresh the page.</b>
-    </div> -->
 
     <input type="button" id="start" value="Start">
     <input type="button" id="stop" value="Stop">
@@ -72,18 +66,6 @@
     <div id='placeholder'>
         e||-<br>B||-<br>G||-<br>D||-<br>A||-<br>E||-
     </div>
-<<<<<<< HEAD
-
-    <!-- <div id="output" style="font-family: monospace;"> 
-        <div id="string1"></div>
-        <div id="string2"></div>
-        <div id="string3"></div>
-        <div id="string4"></div>
-        <div id="string5"></div>
-        <div id="string6"></div>
-    </div> -->
-
-=======
     <div class="container" id="generation">
         <section id="output" contenteditable="false">
             <div id="string1"></div>
@@ -94,7 +76,6 @@
             <div id="string6"></div>
         </section>
     </div>
->>>>>>> 229f9a2bead27d9a3a9965b4a598b35415865fa3
     <div class='fill'>
         <input type="button" id="save2" value="Save" onclick="saveTabs()" />
         <input type="button" id='convert' value="Convert" onclick="loadConverter()">
@@ -107,21 +88,6 @@
     <div class='fill'>
         <div id='converter'></div>
     </div>
-
-
-    <div class="container" id="generation">
-
-            <div id="string1">e||-</div>
-			<div id="string2">B||-</div>
-			<div id="string3">G||-</div>
-			<div id="string4">D||-</div>
-			<div id="string5">A||-</div>
-			<div id="string6">E||-</div>
-        
-        <input type="button" id="save2" value="Save" onclick="saveTabs()" />
-    </div>
-
-
 </body>
 <footer>
     <div id='foot'>
@@ -136,6 +102,7 @@
     crossorigin="anonymous"></script>
 <script src="js/saveTabs.js"></script>
 <script src="js/script.js"></script>
-<!-- <script src="js/banjo_hash_map.js"></script> -->
+<script src="Chord Tables/uke_hash_map.js"></script>
+<script src="Chord Tables/guitar_hash_map copy.js"></script>
 <script src="js/converter.js"></script>
 </html>
