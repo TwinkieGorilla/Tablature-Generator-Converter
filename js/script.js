@@ -110,7 +110,7 @@ function autoCorrelate( buf, sampleRate ) {
 		return sampleRate/best_offset;
 	}
 	return -1;
-//	var best_frequency = sampleRate/best_offset;
+	//var best_frequency = sampleRate/best_offset;
 }
 
 function updatePitch( time ) {
@@ -155,6 +155,7 @@ function updatePitch( time ) {
 	  window.requestAnimationFrame = window.webkitRequestAnimationFrame;
 	  rafID = window.requestAnimationFrame( updatePitch );
 }
+
 
  /*-------------------------------------------------------------------------------------M-E-Y-D-A-------------------------------------------------------------------------------------------------------------------*/
 
@@ -410,9 +411,7 @@ const initializeAnalyzer = audioSource => {
 
 
   
-      if(chroma[0] > 0.7){                                              // if Meyda detects that a note is 70% of the sound being played, then begin taking input.      This might not be necessary
-
-        if(pitch < 1580 && pitch > 1570){                               // 1574 is a G ... left in bc it's easy to whistle
+         if(pitch < 1580 && pitch > 1570){                               // 1574 is a G ... left in bc it's easy to whistle
           console.log("high G")
           notePlayed = 26
 
@@ -583,7 +582,6 @@ const initializeAnalyzer = audioSource => {
         document.getElementById("string5").innerHTML += "--"
         document.getElementById("string6").innerHTML += fretString + "-"
       }
-    }
 
     // below are several lines of old Meyda code used in the old demos. This works for only one octave on one string
 

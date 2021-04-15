@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tab Generator</title>
+    <title>Tab Generator/Converter</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -30,7 +30,7 @@
 </head>
 
 <body>
-    <h1>Tab Generator</h1>
+    <h1>Tab Generator/Converter Demo</h1>
 
     <div class="fill">
         <b>NOTE: Tab edits will be discarded upon refreshing the page.</b>
@@ -72,18 +72,6 @@
     <div id='placeholder'>
         e||-<br>B||-<br>G||-<br>D||-<br>A||-<br>E||-
     </div>
-<<<<<<< HEAD
-
-    <!-- <div id="output" style="font-family: monospace;"> 
-        <div id="string1"></div>
-        <div id="string2"></div>
-        <div id="string3"></div>
-        <div id="string4"></div>
-        <div id="string5"></div>
-        <div id="string6"></div>
-    </div> -->
-
-=======
     <div class="container" id="generation">
         <section id="output" contenteditable="false">
             <div id="string1"></div>
@@ -94,7 +82,6 @@
             <div id="string6"></div>
         </section>
     </div>
->>>>>>> 229f9a2bead27d9a3a9965b4a598b35415865fa3
     <div class='fill'>
         <input type="button" id="save2" value="Save" onclick="saveTabs()" />
         <input type="button" id='convert' value="Convert" onclick="loadConverter()">
@@ -108,26 +95,12 @@
         <div id='converter'></div>
     </div>
 
-
-    <div class="container" id="generation">
-
-            <div id="string1">e||-</div>
-			<div id="string2">B||-</div>
-			<div id="string3">G||-</div>
-			<div id="string4">D||-</div>
-			<div id="string5">A||-</div>
-			<div id="string6">E||-</div>
-        
-        <input type="button" id="save2" value="Save" onclick="saveTabs()" />
-    </div>
-
-
 </body>
 <footer>
     <div id='foot'>
-        <a href="#">Home</a>
-        <a href="#">GNU Public License</a>
-        <a href="#">Github</a>
+        <a href="index.html">Home</a>
+        <a href="license">GNU Public License</a>
+        <a href="https://github.com/TwinkieGorilla/Tablature-Generator-Converter">Source Code</a>
     </div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/meyda@5.0.8/dist/web/meyda.min.js"></script>
