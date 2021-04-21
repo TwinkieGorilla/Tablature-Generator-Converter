@@ -183,10 +183,10 @@ function loadConverter()
         console.log('selected uke');
         guit_to_uke_convert(); //instantiates the guit_to_uke_convert function -- updates the ukulele tab
     }
-    else if (selectOption.options[selectOption.selectedIndex].value == 'banjo')
-    {
-        console.log('selected banjo');
-    }
+    // else if (selectOption.options[selectOption.selectedIndex].value == 'banjo')
+    // {
+    //     console.log('selected banjo');
+    // }
     else
         console.log('else');
     all_guit_strings = [[]]; //reset the double array...??? -> this works!!
