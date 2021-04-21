@@ -6,7 +6,9 @@ body {
     width: 100%;
     
 }
-
+button {
+    border: #aaa;
+}
 body * {
     margin: 4px 0;
 }
@@ -468,7 +470,7 @@ label[role="button"],
     display: inline-block;
     background: var(--button-back-color);
     color: var(--button-fore-color);
-    border: 0.0625rem solid var(--button-border-color);
+    /* border: 0.0625rem solid var(--button-border-color); */
     border-radius: var(--universal-border-radius);
     padding: var(--universal-padding) calc(1.5 * var(--universal-padding));
     margin: var(--universal-margin);
