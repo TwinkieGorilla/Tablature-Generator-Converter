@@ -72,13 +72,15 @@ uke_string2.length = 75;
 uke_string3.length = 75;
 uke_string4.length = 75;
 
+/*
 //populating the four UKULELE string arrays with hyphens
 for (i = 0; i < uke_string1.length; i++) {
-    uke_string1[i] = "-";
-    uke_string2[i] = "-";
-    uke_string3[i] = "-";
-    uke_string4[i] = "-";
+    document.getElementById("ukeString1").innerHTML +=uke_string1[i] = "-";
+    document.getElementById("ukeString2").innerHTML +=uke_string2[i] = "-";
+    document.getElementById("ukeString3").innerHTML +=uke_string3[i] = "-";
+    document.getElementById("ukeString4").innerHTML +=uke_string4[i] = "-";
 }
+*/
 
 var all_uke_strings = new Array(uke_string1, uke_string2, uke_string3, uke_string4);
 
@@ -141,6 +143,12 @@ function banjo_tab_display() {
 
 function loadConverter()
 {
+
+    document.getElementById("ukeString1").innerHTML = "G||-"
+    document.getElementById("ukeString2").innerHTML = "C||-"
+    document.getElementById("ukeString3").innerHTML = "E||-"
+    document.getElementById("ukeString4").innerHTML = "A||-"
+
     // instantiating guit_tab_display -- displaying the empty GUITAR tab
     //guit_tab_display();
     //generation.appendChild(d)
@@ -213,6 +221,14 @@ function guit_to_uke_convert() {
                 continue;
             else
             {
+
+                if(jindex % 4 == 0){
+                    document.getElementById("ukeString1").innerHTML += "-"
+                    document.getElementById("ukeString2").innerHTML += "-"
+                    document.getElementById("ukeString3").innerHTML += "-"
+                    document.getElementById("ukeString4").innerHTML += "-"
+                }
+
                 const d = element[jindex];
                 frigginChord += d;
                 the_uke = uke_chord.get(guit_chord.get(frigginChord));
@@ -220,6 +236,10 @@ function guit_to_uke_convert() {
                 {
                     console.log(the_uke); //returns undefined if there is no equivalent chord conversion
                     convertedStuff.textContent += the_uke + "\n"; //add it to the div below the generator
+                    document.getElementById("ukeString1").innerHTML += the_uke[0]
+                    document.getElementById("ukeString2").innerHTML += the_uke[1]
+                    document.getElementById("ukeString3").innerHTML += the_uke[2]
+                    document.getElementById("ukeString4").innerHTML += the_uke[3]
                 }
             }
         }
