@@ -7,14 +7,16 @@ var EString = document.getElementById('string6');
 
 function saveTabs() {
   var tabs2 = new Array();
-
+  tabs2.push('Generated using the Tablature Generator Converter - Copyright 2021 \n https://tablaturegeneratorconverter.netlify.app/ \n');
   //grab each string - newline char is for the format of the saved file
-  tabs2.push('e||-' + eString.innerHTML + '\n');
-  tabs2.push('B||-' + BString.innerHTML + '\n');
-  tabs2.push('G||-' + GString.innerHTML + '\n');
-  tabs2.push('D||-' + DString.innerHTML + '\n');
-  tabs2.push('A||-' + AString.innerHTML + '\n');
-  tabs2.push('E||-' + EString.innerHTML + '\n');
+  tabs2.push(eString.innerHTML + '\n');
+  tabs2.push(BString.innerHTML + '\n');
+  tabs2.push(GString.innerHTML + '\n');
+  tabs2.push(DString.innerHTML + '\n');
+  tabs2.push(AString.innerHTML + '\n');
+  tabs2.push(EString.innerHTML + '\n');
+
+  
 
   //create blob from tabs2 and save it
   var blob = new Blob(tabs2, {type: 'text/plain', endings: 'transparent'});
