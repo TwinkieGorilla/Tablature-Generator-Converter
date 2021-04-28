@@ -144,6 +144,8 @@ function banjo_tab_display() {
 function loadConverter()
 {
 
+    document.getElementById("info").innerHTML = "Converted chords:"
+
     document.getElementById("ukeString1").innerHTML = "G||-"
     document.getElementById("ukeString2").innerHTML = "C||-"
     document.getElementById("ukeString3").innerHTML = "E||-"
@@ -204,7 +206,7 @@ function guit_to_uke_convert() {
     var frigginChord = '';
     convertedStuff.textContent = ''; //wipe the converted section
     console.log(all_guit_strings.length); // length = 7?
-    convertedStuff.textContent = "Ukulele Conversion: ";
+    //convertedStuff.textContent = "Ukulele Conversion: ";
     //convertedStuff.appendChild(document.createElement('br')); //create a break in between the converted pieces
 
     for (let j = 0; j < guit_string1.length; j++) { //assuming that the length of guitarstring1 is greater than all other strings
