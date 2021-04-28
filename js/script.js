@@ -366,7 +366,7 @@
  
      /*-------------------------------------------------------------------------T-A-B-L-A-T-U-R-E--------------G-E-N-E-R-A-T-I-O-N-----------------------------------------------------------------------------------------------------*/
  
-     if(rms > 0.1){
+     //if(rms > 0.1){
  
      if(spectralFlatness < 0.1){									                          // Meyda feature extractor for detcting noisiness; if sound played is "not noisy" (purposefully played), then begin taking input
  
@@ -587,7 +587,7 @@
 
       }   // this is sleep function
 
-    } // this is the rms
+   // } // this is the rms
 
 
  
