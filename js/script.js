@@ -260,8 +260,8 @@
  let levels = [
    {
      name: 'Chroma bands',
-     type: 'frequency',
-     range: { min: 2000, max: 22050 },
+     type: 'amplitude',
+     range: { min: 0, max: 5 },
      level: 0,
      max: 0,
      corrected: 0
@@ -346,12 +346,14 @@
      featureExtractors: [ 
      'chroma',
      'spectralFlatness',
-     'mfcc'
+     'mfcc',
+     'rms'
      ],
      callback: ({
      chroma,
      spectralFlatness,
-     mfcc
+     mfcc,
+     rms
      }) => {
  
        newSpectrum = chroma // populate spectrum
@@ -364,10 +366,11 @@
  
      /*-------------------------------------------------------------------------T-A-B-L-A-T-U-R-E--------------G-E-N-E-R-A-T-I-O-N-----------------------------------------------------------------------------------------------------*/
  
- 
+     if(rms > 0.2){
  
      if(spectralFlatness < 0.1){									                          // Meyda feature extractor for detcting noisiness; if sound played is "not noisy" (purposefully played), then begin taking input
  
+     if((spectralFlatness * 10) % 2){
  
  
        /************************************************************************************************************************************************
@@ -409,8 +412,7 @@
            This should probably be done in different files, but idk how to do that
        ******************************************************************************************************************************************************************/
  
- 
-   
+   // dont need this below
           if(pitch < 1580 && pitch > 1570){                               // 1574 is a G ... left in bc it's easy to whistle
            console.log("high G")
            notePlayed = 26
@@ -582,6 +584,12 @@
          document.getElementById("string5").innerHTML += "--"
          document.getElementById("string6").innerHTML += fretString + "-"
        }
+
+      }   // this is sleep function
+
+    } // this is the rms
+
+
  
      // below are several lines of old Meyda code used in the old demos. This works for only one octave on one string
  
