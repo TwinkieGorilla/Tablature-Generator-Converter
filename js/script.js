@@ -1,4 +1,4 @@
- /*-----------------------------------------------------------------------------------------------P-T-C-H-.-J-S-----------------------------------------------------------------------------------------------------*/
+ /*-----------------------------------------------------------------------------------------------P-I-T-C-H---D-E-T-E-C-T-----------------------------------------------------------------------------------------------------*/
  window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
  var audioContextPitchDetect = null;
@@ -143,7 +143,7 @@
        detuneAmount.innerHTML = Math.abs( detune );
      }
  
-     /*console.log('Pitch', pitch)                                                                 // original pitch.js code
+     /*console.log('Pitch', pitch)
      console.log('Note', noteStrings[note%12])
      console.log('Detune', detune < 0 ? 'flat' : 'sharp')
      console.log('Detune amount', Math.abs( detune ))
@@ -330,335 +330,209 @@
  });
  
  
- // meyda
+
  let analyzer = null
  let audioSourceNodeMap = {}
  let averageLoudness = 0
- let notePlayed = 0                                                      // these might be able to be declared a little lower in the code
+ let notePlayed = 0
  let fretNumber = 0
  let fretString = "--"
  
  const initializeAnalyzer = audioSource => {
-   analyzer = Meyda.createMeydaAnalyzer({
-     audioContext,
-     source: audioSourceNodeMap[audioSource],
-     bufferSize: 1024,
-     featureExtractors: [ 
-     'chroma',
-     'spectralFlatness',
-     'mfcc',
-     'rms'
-     ],
-     callback: ({
-     chroma,
-     spectralFlatness,
-     mfcc,
-     rms
-     }) => {
+  analyzer = Meyda.createMeydaAnalyzer({
+    audioContext,
+    source: audioSourceNodeMap[audioSource],
+    bufferSize: 1024,
+    featureExtractors: [ 
+    'chroma',
+    'spectralFlatness'
+    ],
+    callback: ({
+    chroma,
+    spectralFlatness
+    }) => {
  
-       newSpectrum = chroma // populate spectrum
-     //console.log(mfcc)
+    newSpectrum = chroma // populate spectrum
  
-     if (chroma) { brightness = 1024 / (1024 * chroma) }
-     if (chroma) { currentEnergy = 0.87 + (chroma / 1024) } 
- 
- 
- 
-     /*-------------------------------------------------------------------------T-A-B-L-A-T-U-R-E--------------G-E-N-E-R-A-T-I-O-N-----------------------------------------------------------------------------------------------------*/
- 
-     //if(rms > 0.1){
- 
-     if(spectralFlatness < 0.1){									                          // Meyda feature extractor for detcting noisiness; if sound played is "not noisy" (purposefully played), then begin taking input
- 
-     if((spectralFlatness * 10) % 2){
- 
- 
-       /************************************************************************************************************************************************
-           Each string on a guitar in standard tuning, read highest string to lowest string
- 
-           The note to which each string is tuned is assigned a numerical value based on the total set of playable notes on a guitar (in standard tuning)
- 
-           The low E is represented with 0 because it is lowest playable note
-       *************************************************************************************************************************************************/
- 
- 
- 
-       string1 = 24                                                      // These should probably be defined somewhere else... maybe above the if statement?
-       string2 = 19
-       string3 = 15
-       string4 = 10
-       string5 = 5
-       string6 = 0
- 
- 
- 
-       /***************************************************************************************************************************************************************
-           Using pitch.js, each frequency of every note on the guitar fretboard is assigned a numerical value
- 
-           0 is the value for the lowest playable note (an E2, played open on the lowest string in standard tuning)
- 
-           I haven't added everything yet, but the highest is probably about 50 ... meaning there are only 50 or so unique notes on a guitar
- 
-           "pitch" is a variable created by pitch.js that normally returns a frequency, ex. 440 for an A
- 
-           I built in some redundancy by making a range of acceptable frequencies that qualify for a note, if someone is out of tune
- 
-           Each if statement below represents a different note, so if the frequency of that note is played (+ or - some error), then it is assigned a value from 0 to 50
- 
-           This value is called "notePlayed" ... the console.logs are there for testing purposes and also to let us know which note is which
- 
-           When we add other instruments, we will need to copy this if statment and change the numerical assignment to correspond to that instrument's tuning system
- 
-           This should probably be done in different files, but idk how to do that
-       ******************************************************************************************************************************************************************/
- 
-   // dont need this below
-          if(pitch < 1580 && pitch > 1570){                               // 1574 is a G ... left in bc it's easy to whistle
-           console.log("high G")
-           notePlayed = 26
- 
-         // TODO: ADD IN THE REST OF THE NOTES
- 
-         }else if(pitch < 542 && pitch > 511){
-           console.log("C5")                                             // BEGIN OCTAVE 5
-           notePlayed = 32
-         }else if(pitch < 510 && pitch > 483){
-           console.log("B4")
-           notePlayed = 31
-         }else if(pitch < 482 && pitch > 455){
-           console.log("A#4")
-           notePlayed = 30
-         }else if(pitch < 454 && pitch > 432){
-           console.log("A4")
-           notePlayed = 29
-         }else if(pitch < 431 && pitch > 405){
-           console.log("G#4")
-           notePlayed = 28
-         }else if(pitch < 404 && pitch > 385){
-           console.log("G4")
-           notePlayed = 27
-         }else if(pitch < 384 && pitch > 360){
-           console.log("F#4")
-           notePlayed = 26
-         }else if(pitch < 359 && pitch > 341){
-           console.log("F4")
-           notePlayed = 25
-         }else if(pitch < 340 && pitch > 322){
-           console.log("E4")                          
-           notePlayed = 24
-         }else if(pitch < 321 && pitch > 305){
-           console.log("D#4")
-           notePlayed = 23
-         }else if(pitch < 304 && pitch > 289){
-           console.log("D4")
-           notePlayed = 22
-         }else if(pitch < 288 && pitch > 271){
-           console.log("C#4")
-           notePlayed = 21
-         }else if(pitch < 270 && pitch > 256){
-           console.log("C4")                                             // BEGIN OCTAVE 4
-           notePlayed = 20
-         }else if(pitch < 255 && pitch > 241){
-           console.log("B3")
-           notePlayed = 19
-         }else if(pitch < 240 && pitch > 230){
-           console.log("A#3")
-           notePlayed = 18
-         }else if(pitch < 229 && pitch > 214){
-           console.log("A3")
-           notePlayed = 17
-         }else if(pitch < 213 && pitch > 201){
-           console.log("G#3")
-           notePlayed = 16
-         }else if(pitch < 200 && pitch > 191){
-           console.log("G3")
-           notePlayed = 15
-         }else if(pitch < 190 && pitch > 181){
-           console.log("F#3")
-           notePlayed = 14
-         }else if(pitch < 180 && pitch > 170){
-           console.log("F3")
-           notePlayed = 13
-         }else if(pitch < 169 && pitch > 160){
-           console.log("E3")                          
-           notePlayed = 12
-         }else if(pitch < 159 && pitch > 153){
-           console.log("D#3")
-           notePlayed = 11
-         }else if(pitch < 152 && pitch > 144){
-           console.log("D3")
-           notePlayed = 10
-         }else if(pitch < 143 && pitch > 136){
-           console.log("C#3")
-           notePlayed = 9
-         }else if(pitch < 135 && pitch > 128){ // 131 is a C3                // BEGIN OCTAVE 3
-           console.log("C3")
-           notePlayed = 8
-         }else if(pitch < 127 && pitch > 121){ // 123 is a B2
-           console.log("B2")
-           notePlayed = 7
-         }else if(pitch < 120 && pitch > 115){ // 117 is a A#2
-           console.log("A#2")
-           notePlayed = 6
-         }else if(pitch < 114 && pitch > 108){ // 110 is a A2
-           console.log("A2")
-           notePlayed = 5
-         }else if(pitch < 107 && pitch > 103){ // 104 is a G#2
-           console.log("G#2")
-           notePlayed = 4
-         }else if(pitch < 102 && pitch > 96){ // 98 is a G2
-           console.log("G2")
-           notePlayed = 3
-         }else if(pitch < 95 && pitch > 91){ // 92 is a F#2
-           console.log("F#2")
-           notePlayed = 2
-         }else if(pitch < 90 && pitch > 85){ // 87 is a F2
-           console.log("F2")
-           notePlayed = 1
-         }else if(pitch < 84 && pitch > 79){ // 82 is a E2
-           console.log("E2")                          
-           notePlayed = 0
-         }else{                                                              // when pitch isn't detcted, write "--" ... gotta love JS type safety lol     if this wasn't in here, it would write 0s instead
-           console.log("Pitch too low to be detected")
-           notePlayed = "--"
-         }
- 
-       if(notePlayed == -1){                                                 // this code might be redundant, but it's used a few lines down ... 
-           fretString = "--"
-       }
-       
-       console.log(notePlayed)                                               // just here for testing purposes
- 
-       if(notePlayed >= string1){                                            // if the note you played (notePlayed) is higher in pitch than the high E (the note to which the top string is tuned), then write it on the top string
-         fretNumber = notePlayed - string1
-         fretString = fretNumber.toString()
-         document.getElementById("string1").innerHTML += fretString + "-"
-         document.getElementById("string2").innerHTML += "--"
-         document.getElementById("string3").innerHTML += "--"
-         document.getElementById("string4").innerHTML += "--"
-         document.getElementById("string5").innerHTML += "--"
-         document.getElementById("string6").innerHTML += "--"
-       }else if(notePlayed < string1 && notePlayed >= string2){              // if the note you played is higher than the open B string, but lower than the high E string, then write on the second string
-         fretNumber = notePlayed - string2
-         fretString = fretNumber.toString()
-         document.getElementById("string1").innerHTML += "--"
-         document.getElementById("string2").innerHTML += fretString + "-"
-         document.getElementById("string3").innerHTML += "--"
-         document.getElementById("string4").innerHTML += "--"
-         document.getElementById("string5").innerHTML += "--"
-         document.getElementById("string6").innerHTML += "--"
-       }else if(notePlayed < string2 && notePlayed >= string3){            // same idea for the other string ...
-         fretNumber = notePlayed - string3
-         fretString = fretNumber.toString()
-         document.getElementById("string1").innerHTML += "--"
-         document.getElementById("string2").innerHTML += "--"
-         document.getElementById("string3").innerHTML += fretString + "-"
-         document.getElementById("string4").innerHTML += "--"
-         document.getElementById("string5").innerHTML += "--"
-         document.getElementById("string6").innerHTML += "--"
-       }else if(notePlayed < string3 && notePlayed >= string4){
-         fretNumber = notePlayed - string4
-         fretString = fretNumber.toString()
-         document.getElementById("string1").innerHTML += "--"
-         document.getElementById("string2").innerHTML += "--"
-         document.getElementById("string3").innerHTML += "--"
-         document.getElementById("string4").innerHTML += fretString + "-"
-         document.getElementById("string5").innerHTML += "--"
-         document.getElementById("string6").innerHTML += "--"
-       }else if(notePlayed < string4 && notePlayed >= string5){
-         fretNumber = notePlayed - string5
-         fretString = fretNumber.toString()
-         document.getElementById("string1").innerHTML += "--"
-         document.getElementById("string2").innerHTML += "--"
-         document.getElementById("string3").innerHTML += "--"
-         document.getElementById("string4").innerHTML += "--"
-         document.getElementById("string5").innerHTML += fretString + "-"
-         document.getElementById("string6").innerHTML += "--"
-       }else if(notePlayed < string5 ){
-         fretNumber = notePlayed - string6
-         fretString = fretNumber.toString()
-         document.getElementById("string1").innerHTML += "--"
-         document.getElementById("string2").innerHTML += "--"
-         document.getElementById("string3").innerHTML += "--"
-         document.getElementById("string4").innerHTML += "--"
-         document.getElementById("string5").innerHTML += "--"
-         document.getElementById("string6").innerHTML += fretString + "-"
-       }
+    if (chroma) { brightness = 1024 / (1024 * chroma) }
+    if (chroma) { currentEnergy = 0.87 + (chroma / 1024) } 
 
-      }   // this is sleep function
+    /*-------------------------------------------------------------------------T-A-B-L-A-T-U-R-E--------------G-E-N-E-R-A-T-I-O-N-----------------------------------------------------------------------------------------------------*/
 
-   // } // this is the rms
+    string1 = 24
+    string2 = 19
+    string3 = 15
+    string4 = 10
+    string5 = 5
+    string6 = 0
 
+    i++                                                                                 // counter for reducing output rate
+    if(i == 100){
+      i = 0
+    }
 
- 
-     // below are several lines of old Meyda code used in the old demos. This works for only one octave on one string
- 
-     /*
-       // console.log("you played a C")
-       fret = 8
-     }else if(chroma[1] > 0.7){
-       // console.log("you played a C#")
-       fret = 9
-     }else if(chroma[2] > 0.7){
-       // console.log("you played a D")
-       fret = 10
-     }else if(chroma[3] > 0.7){
-       // console.log("you played a D#")
-       fret = 11
-     }else if(chroma[4] > 0.7){
-       // console.log("you played a E")
-       fret = 0
-     }else if(chroma[5] > 0.7){
-       // console.log("you played a F")
-       fret = 1
-     }else if(chroma[6] > 0.7){
-       // console.log("you played a F#")
-       fret = 2
-     }else if(chroma[7] > 0.7){
-       // console.log("you played a G")
-       fret = 3
-     }else if(chroma[8] > 0.7){
-       // console.log("you played a G#")
-       fret = 4
-     }else if(chroma[9] > 0.7){
-       // console.log("you played a A")
-       fret = 5
-     }else if(chroma[10] > 0.7){
-       // console.log("you played a A#")
-       fret = 6
-     }else if(chroma[11] > 0.7){
-       // console.log("you played a B")
-       fret = 7
-     }
- 
-     document.getElementById("string1").innerHTML += (fretNumber.toString().length === 1 ? `$${fretNumber}` : fretNumber) + "-"             // this is a prettier way to write the tabs ... might solve the spacing inconsistencies between strings
-     document.getElementById("string2").innerHTML += "--"
-     document.getElementById("string3").innerHTML += "--"
-     document.getElementById("string4").innerHTML += "--"
-     document.getElementById("string5").innerHTML += "--"
-     document.getElementById("string6").innerHTML += "--"
+    if(i % 4 == 0){                                                                     // only make tab calculations every four readings
+      if(spectralFlatness < 0.1){									                                      // Meyda feature extractor for detcting noisiness; if sound played is "not noisy" (purposefully played), then begin taking input  
+
+        if(pitch < 638 && pitch > 604){                  
+          notePlayed = 35
+        }else if(pitch < 603 && pitch > 567){                               
+          notePlayed = 34
+        }else if(pitch < 566 && pitch > 543){                                    
+          notePlayed = 33
+        }else if(pitch < 542 && pitch > 511){                                          // BEGIN OCTAVE 5
+          notePlayed = 32
+        }else if(pitch < 510 && pitch > 483){
+          notePlayed = 31
+        }else if(pitch < 482 && pitch > 455){
+          notePlayed = 30
+        }else if(pitch < 454 && pitch > 432){
+          notePlayed = 29
+        }else if(pitch < 431 && pitch > 405){
+          notePlayed = 28
+        }else if(pitch < 404 && pitch > 385){
+          notePlayed = 27
+        }else if(pitch < 384 && pitch > 360){
+          notePlayed = 26
+        }else if(pitch < 359 && pitch > 341){
+          notePlayed = 25
+        }else if(pitch < 340 && pitch > 322){                        
+          notePlayed = 24
+        }else if(pitch < 321 && pitch > 305){
+          notePlayed = 23
+        }else if(pitch < 304 && pitch > 289){
+          notePlayed = 22
+        }else if(pitch < 288 && pitch > 271){
+          notePlayed = 21
+        }else if(pitch < 270 && pitch > 256){                                          // BEGIN OCTAVE 4
+          notePlayed = 20
+        }else if(pitch < 255 && pitch > 241){
+          notePlayed = 19
+        }else if(pitch < 240 && pitch > 230){
+          notePlayed = 18
+        }else if(pitch < 229 && pitch > 214){
+          notePlayed = 17
+        }else if(pitch < 213 && pitch > 201){
+          notePlayed = 16
+        }else if(pitch < 200 && pitch > 191){
+          notePlayed = 15
+        }else if(pitch < 190 && pitch > 181){
+          notePlayed = 14
+        }else if(pitch < 180 && pitch > 170){
+          notePlayed = 13
+        }else if(pitch < 169 && pitch > 160){                       
+          notePlayed = 12
+        }else if(pitch < 159 && pitch > 153){
+          notePlayed = 11
+        }else if(pitch < 152 && pitch > 144){
+          notePlayed = 10
+        }else if(pitch < 143 && pitch > 136){
+          notePlayed = 9
+        }else if(pitch < 135 && pitch > 128){ // 131 is a C3                          // BEGIN OCTAVE 3
+          notePlayed = 8
+        }else if(pitch < 127 && pitch > 121){ // 123 is a B2
+          notePlayed = 7
+        }else if(pitch < 120 && pitch > 115){ // 117 is a A#2
+          notePlayed = 6
+        }else if(pitch < 114 && pitch > 108){ // 110 is a A2
+          notePlayed = 5
+        }else if(pitch < 107 && pitch > 103){ // 104 is a G#2
+          notePlayed = 4
+        }else if(pitch < 102 && pitch > 96){ // 98 is a G2
+          notePlayed = 3
+        }else if(pitch < 95 && pitch > 91){ // 92 is a F#2
+          notePlayed = 2
+        }else if(pitch < 90 && pitch > 85){ // 87 is a F2
+          notePlayed = 1
+        }else if(pitch < 84 && pitch > 79){ // 82 is a E2                     
+          notePlayed = 0
+        }else{                                                                        // when pitch isn't detcted, write "--"
+          notePlayed = "--"
+        }
+
+        if(notePlayed >= string1){
+          fretNumber = notePlayed - string1
+          fretString = fretNumber.toString()
+          document.getElementById("string1").innerHTML += fretString + "-"
+          document.getElementById("string2").innerHTML += "--"
+          document.getElementById("string3").innerHTML += "--"
+          document.getElementById("string4").innerHTML += "--"
+          document.getElementById("string5").innerHTML += "--"
+          document.getElementById("string6").innerHTML += "--"
+        }else if(notePlayed < string1 && notePlayed >= string2){                      // if the note you played is higher than the open B string, but lower than the high E string, then write on the second string
+          fretNumber = notePlayed - string2
+          fretString = fretNumber.toString()
+          document.getElementById("string1").innerHTML += "--"
+          document.getElementById("string2").innerHTML += fretString + "-"
+          document.getElementById("string3").innerHTML += "--"
+          document.getElementById("string4").innerHTML += "--"
+          document.getElementById("string5").innerHTML += "--"
+          document.getElementById("string6").innerHTML += "--"
+        }else if(notePlayed < string2 && notePlayed >= string3){
+          fretNumber = notePlayed - string3
+          fretString = fretNumber.toString()
+          document.getElementById("string1").innerHTML += "--"
+          document.getElementById("string2").innerHTML += "--"
+          document.getElementById("string3").innerHTML += fretString + "-"
+          document.getElementById("string4").innerHTML += "--"
+          document.getElementById("string5").innerHTML += "--"
+          document.getElementById("string6").innerHTML += "--"
+        }else if(notePlayed < string3 && notePlayed >= string4){
+          fretNumber = notePlayed - string4
+          fretString = fretNumber.toString()
+          document.getElementById("string1").innerHTML += "--"
+          document.getElementById("string2").innerHTML += "--"
+          document.getElementById("string3").innerHTML += "--"
+          document.getElementById("string4").innerHTML += fretString + "-"
+          document.getElementById("string5").innerHTML += "--"
+          document.getElementById("string6").innerHTML += "--"
+        }else if(notePlayed < string4 && notePlayed >= string5){
+          fretNumber = notePlayed - string5
+          fretString = fretNumber.toString()
+          document.getElementById("string1").innerHTML += "--"
+          document.getElementById("string2").innerHTML += "--"
+          document.getElementById("string3").innerHTML += "--"
+          document.getElementById("string4").innerHTML += "--"
+          document.getElementById("string5").innerHTML += fretString + "-"
+          document.getElementById("string6").innerHTML += "--"
+        }else if(notePlayed < string5 ){
+          fretNumber = notePlayed - string6
+          fretString = fretNumber.toString()
+          document.getElementById("string1").innerHTML += "--"
+          document.getElementById("string2").innerHTML += "--"
+          document.getElementById("string3").innerHTML += "--"
+          document.getElementById("string4").innerHTML += "--"
+          document.getElementById("string5").innerHTML += "--"
+          document.getElementById("string6").innerHTML += fretString + "-"
+        }
+      }
+    }
+
+      /*
+      document.getElementById("string1").innerHTML += (fretNumber.toString().length === 1 ? `$${fretNumber}` : fretNumber) + "-"             // alternate display method; might solve the spacing inconsistencies between strings
+      document.getElementById("string2").innerHTML += "--"
+      document.getElementById("string3").innerHTML += "--"
+      document.getElementById("string4").innerHTML += "--"
+      document.getElementById("string5").innerHTML += "--"
+      document.getElementById("string6").innerHTML += "--"
+      
+      if(chroma % 2 != 0){															                                                                                   	// old implementation of alternating tabs with blank space
+        document.getElementById("string1").innerHTML += "--"
+        document.getElementById("string2").innerHTML += "--"
+        document.getElementById("string3").innerHTML += "--"
+        document.getElementById("string4").innerHTML += "--"
+        document.getElementById("string5").innerHTML += "--"
+        document.getElementById("string6").innerHTML += "--"
+      }
+      */
      
-     if(chroma % 2 != 0){															                                                                                   	// alternate tabs with blank space ... we will probably still need this but it currently isn't working well wnough for that to be a concern
-       document.getElementById("string1").innerHTML += "--"
-       document.getElementById("string2").innerHTML += "--"
-       document.getElementById("string3").innerHTML += "--"
-       document.getElementById("string4").innerHTML += "--"
-       document.getElementById("string5").innerHTML += "--"
-       document.getElementById("string6").innerHTML += "--"
-     }		*/
- 
-       }
-     
-     }
+    }
    }) 
    
    analyzer.start()
-   
  }
  
- 
  /*-------------------------------------------------------------------------A-U-D-I-O---------S-O-U-R-C-E-S----&------M-E-Y-D-A-----V-I-S-U-A-L-S-----------------------------------------------------------------------*/
- 
  
  // connect the audioSource to the audioContext (needed in order to process it)
  const connectAudioSource = (audioSource, audioSources) => {
@@ -692,8 +566,6 @@
    // }
  }
  
- 
- 
  let newSpectrum = new Array(512) // holds 512 values (bins) for the audio frequency spectrum
  newSpectrum.fill(0, 0, newSpectrum.length)
  let currentSpectrum = new Array(512)
@@ -720,7 +592,6 @@
  
    const stream = audioSources.find(audioSrc => audioSrc.name === audioSource).source
    gotStream(stream)
- 
  })
  
  // real time levels data
@@ -759,7 +630,6 @@
    
    freqTest = level.level.toFixed(2)
    // document.querySelector('#level_'+index).innerHTML = 'Normalized Level: ' + level.level
-   
    
    })
    // draw spectrum
