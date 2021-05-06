@@ -1,129 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tab Generator/Converter</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="css/test.css" />
-    <script src="Chord Tables/uke_hash_map.js"></script>
-    <script src="Chord Tables/guitar_hash_map copy.js"></script>
-    <style>
-        body { font: 14pt 'Alike', sans-serif;}
-        #note { font-size: 164px; }
-        .droptarget { background-color: #348781}
-        div.confident { color: white; }
-        div.vague { color: lightgrey; }
-        #note { display: inline-block; height:180px; text-align: left;}
-        
-        #detector { width: 300px; height: 300px; border: 4px solid gray; border-radius: 8px; text-align: center; padding-top: 10px;}
-        #output { width: 300px; height: 42px; }
-        #flat { display: none; }
-        #sharp { display: none; }
-        .flat #flat { display: inline; }
-        .sharp #sharp { display: inline; }
-        #detector {display: none;}
-        </style>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tab Generator/Converter</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="css/test.css" />
+        <script src="Chord Tables/uke_hash_map.js"></script>
+        <script src="Chord Tables/guitar_hash_map copy.js"></script>
+        <style>
+            body { font: 14pt 'Alike', sans-serif;}
+            #note { font-size: 164px; }
+            .droptarget { background-color: #348781}
+            div.confident { color: white; }
+            div.vague { color: lightgrey; }
+            #note { display: inline-block; height:180px; text-align: left;}
+            
+            #detector { width: 300px; height: 300px; border: 4px solid gray; border-radius: 8px; text-align: center; padding-top: 10px;}
+            #output { width: 300px; height: 42px; }
+            #flat { display: none; }
+            #sharp { display: none; }
+            .flat #flat { display: inline; }
+            .sharp #sharp { display: inline; }
+            #detector {display: none;}
+            </style>
+    </head>
 
-<body>
-    <h1>Tab Generator/Converter Demo</h1>
+    <body>
+        <h1>Tab Generator/Converter Demo</h1>
 
-    <div class="fill">
-        <b>NOTE: Tab edits will be discarded upon refreshing the page.</b>
-    </div>
-
-    <!-- <div class="fill">
-        <b>If you want to delete the generated tabs, just refresh the page.</b>
-    </div> -->
-
-    <input type="button" id="start" value="Start">
-    <input type="button" id="stop" value="Stop">
-
-    <div class="break"></div>
-
-    <!-- Audio waves / frequencies -->
-    
-    <div class='fill'>
-        <select id='audioSourceSelect'></select>
-    </div>
-
-    <div class='fill'>
-        <div id='monitor'> </div>
-        <canvas id='canvas' width='300' height='100'></canvas>
-    </div>
-
-    <div class='fill'>
-        <div id="detector" class="vague">
-            <div class="pitch"><span id="pitch">--</span>Hz</div>
-            <div class="note"><span id="note">--</span></div>   
-            <div id="detune"><span id="detune_amt">--</span><span id="flat">cents &#9837;</span><span id="sharp">cents &#9839;</span></div>
+        <div class="fill" style="text-align: center;">
+            <br>NOTE: Tab edits will be discarded upon page refresh</br>
+        </br>
         </div>
 
+        <input type="button" id="start" value="Start">
+        <input type="button" id="stop" value="Stop">
+
+        <div class="break"></div>
+
+        <!-- Audio waves / frequencies -->
+        <div class='fill'>
+            <select id='audioSourceSelect'></select>
+        </div>
+
+        <div class='fill'>
+            <div id='monitor'> </div>
+            <canvas id='canvas' width='300' height='100'></canvas>
+        </div>
+
+        <div class='fill'>
+            <div id="detector" class="vague">
+                <div class="pitch"><span id="pitch">--</span>Hz</div>
+                <div class="note"><span id="note">--</span></div>   
+                <div id="detune"><span id="detune_amt">--</span><span id="flat">cents &#9837;</span><span id="sharp">cents &#9839;</span></div>
+            </div>
+
+        </div>
+
+        <div class='fill'>
+            <h2>Generated Tabs:</h2>
+        </div>
+
+        <div class="container" id="generation">
+            <section contenteditable="true">
+                <div id="string1">e||-</div>
+                <div id="string2">B||-</div>
+                <div id="string3">G||-</div>
+                <div id="string4">D||-</div>
+                <div id="string5">A||-</div>
+                <div id="string6">E||-</div>
+            </section>
+        </div>
+        <div class='fill'>
+            <input type="button" id="save2" value="Save" onclick="disclaimer(); saveTabs()" />
+            <input type="button" id='convert' value="Convert" onclick="loadConverter()">
+            <select name="instrument" id="instrument">
+                <option value="uke">Ukulele</option>
+                <!-- <option value="banjo">Banjo</option> -->
+            </select>
+        </div>
+        </div>
+
+        <script>
+            function disclaimer() {
+                alert("THE CREATORS OF THIS SOFTWARE TAKE NO RESPONSIBILITY FOR\n\n  THE GENERATION OR CONVERSION OF COPYRIGHTED WORKS")
+            }
+        </script>
+
+        <h2 id='info'></h2>
+
+        <div class='fill'>
+            <div id='converter' style="display: none;"></div>
+        
+        <div class="container" id="converter">
+            <section contenteditable="true">
+                <div id="ukeString1"></div>
+                <div id="ukeString2"></div>
+                <div id="ukeString3"></div>
+                <div id="ukeString4"></div>
+            </section>
+        </div>
     </div>
 
-    <div class='fill'>
-        <h2>Generated Tabs:</h2>
-    </div>
+    </body>
+    <footer>
+        <div id='foot'>
+            <a href="index.html">Home</a>
+            <a href="license">GNU Public License</a>
+            <a href="https://github.com/TwinkieGorilla/Tablature-Generator-Converter">Source Code</a>
+        </div>
+    </footer>
 
-    <!--<div id='placeholder'>
-        e||-<br>B||-<br>G||-<br>D||-<br>A||-<br>E||-
-    </div>-->
-    <div class="container" id="generation">
-        <section contenteditable="true">
-            <div id="string1">e||-</div>
-            <div id="string2">B||-</div>
-            <div id="string3">G||-</div>
-            <div id="string4">D||-</div>
-            <div id="string5">A||-</div>
-            <div id="string6">E||-</div>
-        </section>
-    </div>
-    <div class='fill'>
-        <input type="button" id="save2" value="Save" onclick="saveTabs()" />
-        <input type="button" id='convert' value="Convert" onclick="loadConverter()">
-        <select name="instrument" id="instrument">
-            <option value="uke">Ukulele</option>
-            <!-- <option value="banjo">Banjo</option> -->
-        </select>
-    </div>
-    </div>
-
-    <h2 id='info'></h2>
-
-    <div class='fill'>
-        <div id='converter' style="display: none;"></div>
-    
-
-    <div class="container" id="converter">
-        <section contenteditable="true">
-            <div id="ukeString1"></div>
-            <div id="ukeString2"></div>
-            <div id="ukeString3"></div>
-            <div id="ukeString4"></div>
-        </section>
-    </div>
-</div>
-
-
-</body>
-<footer>
-    <div id='foot'>
-        <a href="index.html">Home</a>
-        <a href="license">GNU Public License</a>
-        <a href="https://github.com/TwinkieGorilla/Tablature-Generator-Converter">Source Code</a>
-    </div>
-</footer>
-<script src="js/meyda.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"
-    integrity="sha512-90vH1Z83AJY9DmlWa8WkjkV79yfS2n2Oxhsi2dZbIv0nC4E6m5AbH8Nh156kkM7JePmqD6tcZsfad1ueoaovww=="
-    crossorigin="anonymous"></script>
-<script src="js/saveTabs.js"></script>
-<script src="js/script.js"></script>
-<!-- <script src="js/banjo_hash_map.js"></script> -->
-<script src="js/converter.js"></script>
+    <script src="js/meyda.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"
+        integrity="sha512-90vH1Z83AJY9DmlWa8WkjkV79yfS2n2Oxhsi2dZbIv0nC4E6m5AbH8Nh156kkM7JePmqD6tcZsfad1ueoaovww=="
+        crossorigin="anonymous"></script>
+    <script src="js/saveTabs.js"></script>
+    <script src="js/script.js"></script>
+    <!-- <script src="js/banjo_hash_map.js"></script> -->
+    <script src="js/converter.js"></script>
 </html>
